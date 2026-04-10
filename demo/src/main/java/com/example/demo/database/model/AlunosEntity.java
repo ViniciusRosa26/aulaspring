@@ -19,7 +19,8 @@ import java.util.Set;
 public class AlunosEntity {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE, generator = "aluno_seq")
+    @SequenceGenerator(name = "aluno_seq", sequenceName = "aluno_sequence", allocationSize = 1)
     private Integer id;
 
     @Column(nullable = false)
@@ -27,7 +28,7 @@ public class AlunosEntity {
     @Column(nullable = false,unique = true)
     private String email;
 
-    @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER) // o cascade faz as alteracoes em cascata
+    @OneToOne(cascade = CascadeType.PERSIST , fetch = FetchType.EAGER) // o cascade faz as alteracoes em cascata
     @JoinColumn(name = "avaliacao_fisica_id")
     private AvaliacoesFisicasEntity avaliacoesFisicasEntity;
 

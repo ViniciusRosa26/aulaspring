@@ -6,6 +6,7 @@ import com.example.demo.database.model.ExerciciosEntity;
 import com.example.demo.dto.AlunoDto;
 import com.example.demo.dto.ExercicioDto;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.service.AlunoService;
 import com.example.demo.service.ExerciciosService;
 import jakarta.validation.Valid;
@@ -36,6 +37,11 @@ public class AlunosControllerr {
         return alunoService.getAlunoAvaliacao(alunoId);
     }
 
+    @DeleteMapping("/{alunoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletarAluno(@PathVariable Integer alunoId) throws BadRequestException, NotFoundException {
+        alunoService.deletarAluno(alunoId);
+    }
 }
 
 

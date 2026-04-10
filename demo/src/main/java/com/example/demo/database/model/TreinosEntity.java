@@ -18,7 +18,8 @@ import java.util.Set;
 public class TreinosEntity {
 
     @Id // chave primaria
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto incremento
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE, generator = "treino_seq")
+    @SequenceGenerator(name = "treino_seq", sequenceName = "treino_sequence", allocationSize = 1)
     private Integer id;
 
     @Column(nullable = false)
@@ -36,5 +37,3 @@ public class TreinosEntity {
     )
     private Set<ExerciciosEntity> exercicios = new HashSet<>();
 }
-
-

@@ -4,16 +4,24 @@ package com.example.demo.service;
 import com.example.demo.database.model.AlunosEntity;
 import com.example.demo.database.model.AvaliacoesFisicasEntity;
 import com.example.demo.database.repository.IAlunosRepository;
+import com.example.demo.database.repository.IAvaliacoesRepository;
+import com.example.demo.database.repository.ITreinosRepository;
 import com.example.demo.dto.AlunoDto;
 import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 
 public class AlunoService {
 
+    private final IAvaliacoesRepository avaliacoesRepository;
+private final ITreinosRepository treinosRepository;
     private final IAlunosRepository alunosRepository;
 
     public void criarAluno(AlunoDto alunoDto) throws BadRequestException {
@@ -39,5 +47,26 @@ public class AlunoService {
         }
 
         return avaliacoesFisicasEntity;
+    }
+@Transactional // se der um erro entree as exclusoes ele da um roll back (n deixa perder as coisas excluidas antes)
+    public void deletarAluno(Integer alunoId) throws NotFoundException{
+
+
+AlunosEntity aluno = alunosRepository.findById(alunoId)
+                .orElseThrow(() -> new NotFoundException("Aluno não encontrado: " + alunoId));
+
+        //1 . deletar treinos
+
+        List<Integer> treinosAlunoIds = aluno.getTreinos().stream()
+                .map(treino -> treino.getId())
+                .toList();
+
+        treinosRepository.deleteAllById(treinosAlunoIds);
+        //2 deledtar o aluno
+        alunosRepository.deleteAllById(treinosAlunoIds);
+
+        //3 deletar avaliacao
+avaliacoesRepository.deleteById(aluno.getAvaliacoesFisicasEntity().getId());
+
     }
 }
